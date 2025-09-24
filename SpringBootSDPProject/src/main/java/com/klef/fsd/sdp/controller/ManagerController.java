@@ -1,6 +1,7 @@
 package com.klef.fsd.sdp.controller;
 
 import java.util.List;
+import java.util.Optional; // <-- Added import
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,13 +35,13 @@ public class ManagerController
        {
            Manager m = managerService.checkmanagerlogin(manager.getUsername(), manager.getPassword());
 
-           if (m!=null) 
+           if (m != null) 
            {
                return ResponseEntity.ok(m); // if login is successful
            } 
            else 
            {
-               return ResponseEntity.status(401).body("Invalid Username or Password"); // if login is fail
+               return ResponseEntity.status(401).body("Invalid Username or Password"); // if login fails
            }
        } 
        catch (Exception e) 
@@ -49,36 +50,33 @@ public class ManagerController
        }
    }
 
-@PostMapping("/addevent")
-public ResponseEntity<String> addevent(@RequestBody EventDTO dto) {
-    try {
-        Optional<Manager> managerOpt = managerService.getManagerById(dto.getManagerId());
+   @PostMapping("/addevent")
+   public ResponseEntity<String> addevent(@RequestBody EventDTO dto) {
+       try {
+           Optional<Manager> managerOpt = managerService.getManagerById(dto.getManagerId());
 
-        if (managerOpt.isEmpty()) {
-            return ResponseEntity.status(400).body("Manager not found for id: " + dto.getManagerId());
-        }
+           if (managerOpt.isEmpty()) {
+               return ResponseEntity.status(400).body("Manager not found for id: " + dto.getManagerId());
+           }
 
-        Manager manager = managerOpt.get();
+           Manager manager = managerOpt.get();
 
-        Event event = new Event();
-        event.setCategory(dto.getCategory());
-        event.setTitle(dto.getTitle());
-        event.setDescription(dto.getDescription());
-        event.setCapacity(dto.getCapacity());
-        event.setCost(dto.getCost());
-        event.setManager(manager);
+           Event event = new Event();
+           event.setCategory(dto.getCategory());
+           event.setTitle(dto.getTitle());
+           event.setDescription(dto.getDescription());
+           event.setCapacity(dto.getCapacity());
+           event.setCost(dto.getCost());
+           event.setManager(manager);
 
-        String output = managerService.addevent(event);
-        return ResponseEntity.ok(output);
+           String output = managerService.addevent(event);
+           return ResponseEntity.ok(output);
 
-    } catch (Exception e) {
-        e.printStackTrace(); // Log full error
-        return ResponseEntity.status(500).body("Failed to Add Event: " + e.getMessage());
-    }
-}
-
-
-
+       } catch (Exception e) {
+           e.printStackTrace(); // Log full error
+           return ResponseEntity.status(500).body("Failed to Add Event: " + e.getMessage());
+       }
+   }
 
    @GetMapping("/viewbookingsbymanager/{managerId}")
    public ResponseEntity<List<BookEvent>> viewBookingsByManager(@PathVariable int managerId) 
@@ -101,7 +99,4 @@ public ResponseEntity<String> addevent(@RequestBody EventDTO dto) {
     	   return ResponseEntity.status(500).body("Error:" + e.getMessage());
 	   }
    }
-
-
-   
 }
