@@ -1,6 +1,7 @@
 package com.klef.fsd.sdp.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,9 +39,9 @@ public class ManagerServiceImpl implements ManagerService
 	}
 
 	@Override
-	public Manager getManagerById(int mid) 
+	public Optional<Manager> getManagerById(int mid) 
 	{
-	   return managerRepository.findById(mid).get();
+	   return managerRepository.findById(mid); // <-- Return Optional
 	}
 
 	@Override
@@ -62,5 +63,4 @@ public class ManagerServiceImpl implements ManagerService
 		bookEventRepository.updateStatusById(status,id);
 		return "Booking Status Updated Successfully";
 	}
-
 }
